@@ -340,3 +340,235 @@ Client -> DTO -> Controller -> Entity -> repository -> save() -> db
 원래는 post방식이 아니라 patch로 해야함 
 
 </details>
+
+
+## 데이터 삭제
+
+<details>
+<summary>자세히 보기</summary>
+
+### Delete
+
+- mustache 에 delete 태그 추가
+
+
+####  1: 삭제 대상을 가져온다
+```java 
+  Article target = articleRepository.findById(id).orElse(null);
+          log.info(target.toString());
+```
+
+#### 2: 대상을 삭제 한다
+
+```java
+  if(target != null){
+  articleRepository.delete(target);
+  rttr.addFlashAttribute("msg","삭제 완료");
+  }
+```
+
+#### 3: 결과 페이지로 리다이렉트 한다
+```java
+    return "redirect:/articles";
+```
+   
+#### header에 추가     
+```html
+<!-- alert -->
+{{#msg}}
+    <div class="alert alert-primary alert-dismissible">
+        {{msg}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{{/msg}}
+```
+
+</details>
+
+## CRUD와 SQL 쿼리
+
+<details>
+<summary>자세히 보기</summary>
+
+### 쿼리문
+- insert
+- select
+- update
+- delete
+
+<br>
+
+- application properties 설정
+```java
+# JPA 로깅 설정
+# 디버그 레벨로 쿼리 출력
+logging.level.org.hibernate.SQL=DEBUG
+# 이쁘게 보여주기
+spring.jpa.properties.hibernate.format_sql=true
+# 파라미터 보여주기
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+# DB URL 고정 설정
+# 유니크 URL 생성 X
+spring.datasource.generate-unique-name=false
+# 고정 url 설정
+spring.datasource.url=jdbc:h2:mem:testdb
+```
+
+</details>
+
+## REST API & JSON
+
+<details>
+<summary>자세히 보기</summary>
+
+![img_7.png](img_7.png)!
+
+### REST API
+
+- 애플리케이션이나 디바이스가 서로간의 연결하여 통신 할수있는 방법
+- json 형식으로 통일되는 추세
+
+### xml
+- 사용자 정의형 html
+
+
+### json
+- 자바스크립트 표현한 객체표현식
+- { key,value,..}
+<br>
+
+- 관광공사 api 받아올때와같음
+```java
+// 자바스크립트
+fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => response.json())
+      .then(json => console.log(json))
+
+-> //output json데이터
+        {
+        "userId": 1,
+        "id": 1,
+        "title": "delectus aut autem",
+        "completed": false
+        }
+```
+
+- 200: 응답 성공
+- 201: 쓰기,넣기 성공
+- 404: 사이트 존재 X
+- 500: 서버 문제 발생
+
+### TAlend API 확장 프로그램사용
+- POST, GET, PATCH, DELETE
+
+
+</details>
+
+## HTTP와 RestController(REST API, 어떻게 만들죠?)
+<details>
+<summary>자세히 보기</summary>
+
+![img_9.png](img_9.png)!
+
+### 일반 컨트롤러 
+- vue 반환
+
+### REST 컨트롤러
+- json 반환
+
+### POST 방식 null 해결
+- 빌드 gradle 로 바꿈
+
+### POSTMAPPING
+- @RequestBody 를 통해 Request의 body에 있는 내용을 ArticleForm에 담는다.
+
+### PACTHMAPPING
+- 1. 수정용 엔티티 생성
+- 2. 대상 엔티티 조회
+- 3. 잘못된 요청 처리 (대상이 없거나, id가 다른경우)
+```java
+if (target == null || id != article.getId()){
+            // 400, 잘못된 요청 응답
+            log.info("잘못된 요청 id: {}, article: {}", id, article.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+```
+- 4. 업데이트 및 정상 응답
+```java
+target.patch(article);
+        Article updated = articleRepository.save(target);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
+    }
+```
+```java
+// article 에 patch 메서드생성
+public void patch(Article article) {
+        if(article.title != null)
+            this.title = article.title;
+        if(article.content != null)
+            this.content = article.content;
+
+    }
+```
+
+### DELETEMAPPING
+- 1. 대상 찾기
+- 2. 잘못된 요청 처리
+- 3. 대상 삭제
+
+</details>
+
+## 서비스 계층과 트랜잭션
+
+<details>
+<summary>자세히 보기</summary>
+
+![img_10.png](img_10.png)
+
+### 서비스란
+
+- 컨트롤러와 리포지터리 사이에 위치하는 계층으로서 처리 업무의 순서를 총괄
+
+
+### 트랜잭션이란
+
+- 1년에 모두 성공돼야 하는 과정 실패시 되돌리는걸 롤백
+
+### dto 묶음을 entity 묶음으로 변환
+```java
+  List<Article> articleList = dtos.stream()
+  .map(dto -> dto.toEntity())
+  .collect(Collectors.toList());
+```
+
+### entity 묶음을 DB로 저장
+```java
+  articleList.stream()
+        .forEach(article -> articleRepository.save(article));
+```
+        
+### 강제 예외 발생
+```java
+  articleRepository.findById(-1L).orElseThrow(
+  () -> new IllegalArgumentException("결제 실패")
+  );
+```
+
+### 코드 줄임
+```java
+  return (createList != null) ?
+        ResponseEntity.status(HttpStatus.OK).body(createList) :
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+  // 줄이기  -> return (create != null)?
+        ResponseEntity.ok(create) :
+        ResponseEntity.badRequest().build(); 
+```
+
+
+
+
+
+</details>
+
