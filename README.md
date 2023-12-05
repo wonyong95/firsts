@@ -185,7 +185,7 @@ Client -> DTO -> Controller -> Entity -> repository -> save() -> db
   <details>
   <summary>자세히 보기</summary>
   
-  ![img.png](img.png)
+  ![img.png](img/img.png)
   
   url 요청
   - 받아올때 getMapping,@PathVariable 로받음
@@ -208,7 +208,7 @@ Client -> DTO -> Controller -> Entity -> repository -> save() -> db
   <details>
   <summary>자세히 보기</summary>
   
-  ![img_2.png](img_2.png)
+  ![img_2.png](img/img_2.png)
 
   #### 1: 모든 Article을 가져온다
   ```java
@@ -241,9 +241,9 @@ Client -> DTO -> Controller -> Entity -> repository -> save() -> db
   <summary>자세히 보기</summary>
 
   ### 링크와 리다이렉트를 사용하여 페이지간 이동을 연결하시오
-  ![img_3.png](img_3.png)
+  ![img_3.png](img/img_3.png)
   <br><br><br>
-  ![img_4.png](img_4.png)
+  ![img_4.png](img/img_4.png)
   #### Link
   - a , form 태그
   ```java
@@ -270,7 +270,7 @@ Client -> DTO -> Controller -> Entity -> repository -> save() -> db
 
 ### 데이터 수정 페이지 만들기
 
-![img_5.png](img_5.png)
+![img_5.png](img/img_5.png)
 
   #### 수정할 데이터를 가져오기
   ```java
@@ -422,7 +422,7 @@ spring.datasource.url=jdbc:h2:mem:testdb
 <details>
 <summary>자세히 보기</summary>
 
-![img_7.png](img_7.png)!
+![img_7.png](img/img_7.png)!
 
 ### REST API
 
@@ -469,7 +469,7 @@ fetch('https://jsonplaceholder.typicode.com/todos/1')
 <details>
 <summary>자세히 보기</summary>
 
-![img_9.png](img_9.png)!
+![img_9.png](img/img_9.png)!
 
 ### 일반 컨트롤러 
 - vue 반환
@@ -524,7 +524,7 @@ public void patch(Article article) {
 <details>
 <summary>자세히 보기</summary>
 
-![img_10.png](img_10.png)
+![img_10.png](img/img_10.png)
 
 ### 서비스란
 
@@ -566,9 +566,39 @@ public void patch(Article article) {
         ResponseEntity.badRequest().build(); 
 ```
 
-
-
-
-
 </details>
 
+## 테스트 코드 작성
+<details>
+<summary>자세히 보기</summary>
+
+- 테스트란 품질검증을 위한 것으로 우리의 의도대로 작동하는지 확인하기 위함
+
+### TDD
+
+- 테스트 주도 개발 이라고하며 반복 테스트를 이용한 소프트웨어 방법론으로 작은 단위의 테스트 케이스를 작성하고 이를 통과하는 코드를 추가하는 단계를 반복하여 구현
+
+
+![img_11.png](img/img_11.png)
+
+1. Test 코드 과정
+- 예상 시나리오 작성
+- 실제 코드 비교
+- 검증
+- 디버깅 및 리펙토링
+
+2. TestCase
+- index(전체 목록 가져오기)
+- show성공(존재하는 id 입력)
+- show실패(존재하지 않는 id 입력)
+- create성공(title, content 있는 dto 입력)
+- create실패(title, content 포함되있는 dto 입력)
+- update성공(존재하는 id, title, content가 있는 dto 입력)
+- update성공(존재하는 id, title만 있는 dto 입력)
+- update실패(존재하지 않는 id의 dto 입력)
+- update실패(id가 다른 dto 입력)
+- delete성공(존재하는 id 입력)
+- delete실패(존재하지 않는 id 입력)
+ 
+
+</details>
