@@ -602,3 +602,88 @@ public void patch(Article article) {
  
 
 </details>
+
+## 댓글 엔티티와 리파지터리
+
+<details>
+<summary>자세히 보기</summary>
+
+1. 일대다 관계: 게시글 -> 댓글
+2. 다대일 관계: 댓글 -> 게시글
+
+#### entity 작성
+
+```java
+@ManyToOne // 해당 댓글 엔티티가 여러개가, 하나의 Article에 연관된다
+@JoinColumn(name = "article_id") // "aritcle 컬럼에 Article의 대표값을 저장 fk지정
+```
+
+#### 리파지터리 작성
+```java
+public interface CommentRepository extends JpaRepository<Comment,Long> {
+    // 특정 게시글의 모든 댓글 조회
+    @Query(value =
+            "SELECT * " +
+            "FROM comment " +
+            "WHERE article_id = :articleId",
+            nativeQuery = true)
+    List<Comment> findByArticleId(@Param("articleId") Long articleId);
+    // 특정 닉네임의 모든 댓글 조회
+    List<Comment> findByNickname(@Param("nickname") String nickname);
+}
+```
+
+</details>
+
+## 댓글 서비스와 컨트롤러
+
+<details> 
+
+<summary>자세히 보기</summary>
+
+1. Controller
+- 조회, 생성, 수정, 삭제 - 서비스위임 -> 결과 응답
+
+2. Service
+- 조회, 생성, 수정, 삭제
+ 1. 게시글 조회 및 예외 발생
+2. 댓글 엔티티 생성(C)
+3. 엔티티 저장, 수정, 삭제(RUD)
+4. DTO 변환 및 반환(CRUD)
+
+</details>
+
+## 댓글 목록보기
+
+<details>
+<summary>자세히 보기</summary>
+
+
+</details>
+
+## 댓글 등록하기
+
+<details>
+<summary>자세히 보기</summary>
+
+-new.mustache
+
+</details>
+
+## 댓글 수정 JS
+
+<details>
+<summary>자세히 보기</summary>
+
+-list.mustache
+
+</details>
+
+## 댓글 삭제
+
+<details>
+<summary>자세히 보기</summary>
+
+-list.mustache
+
+</details>
