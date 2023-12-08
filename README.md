@@ -687,3 +687,70 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 -list.mustache
 
 </details>
+
+
+## DB 연동
+
+<details>
+<summary>자세히 보기</summary>
+
+![img.png](img.png)
+
+
+build.gradle
+```java
+	// PostgreSQL 드라이버 추가
+	runtimeOnly 'org.postgresql:postgresql'
+```
+
+application.properties
+```java
+# PostgreSQL 연동
+spring.datasource.url=jdbc:postgresql://localhost:5432/firstproject_db
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+
+# 초기화 정보 위치
+spring.sql.init.data-locations=classpath:data.sql
+# 실행시 data.sql을 항상 수행
+spring.sql.init.mode=never
+# 엔티티만 등록해놓으면 DDL 자동으로 작성 테이블 수정,생성
+spring.jpa.hibernate.ddl-auto=update
+```
+</details>
+
+## IOC와 DI
+
+<details>
+<summary>자세히 보기</summary>
+
+![img_1.png](img_1.png)
+
+1. IoC COntainer
+- 핵심 객체를 관리하는 창고로서 컨트롤러, 서비스, 리파지터리등의 다양한 객체들을 이곳에서 만들고 관리함,
+필요 객체를 외부에서 또다른 객체로 꽂아주는, 주입하는 방식을 DI라고함
+
+```java
+@Component // 해당 클래스를 객체를 만들고, 이를 IoC 컨테이너에 등록
+```
+
+
+</details>
+
+## AOP
+<details>
+<summary>자세히 보기</summary>
+
+![img_2.png](img_2.png)
+
+RunningTime 어노테이션 생성
+
+</details>
+
+## ObjectMapper
+<details>
+<summary>자세히 보기</summary>
+
+
+
+</details>
